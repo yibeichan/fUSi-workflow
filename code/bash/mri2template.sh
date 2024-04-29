@@ -16,4 +16,4 @@ input_file="/opt/home/output/Florian_preproc/afni/reorient_angio/angio_raw_deo_r
 # echo "File copied from $original_file to $new_file"
 
 # Run the animal_warper command with the new file path
-@animal_warper -input "$input_file" -base /opt/home/data/template_T1w.nii.gz -outdir /opt/home/output/Florian_preproc/afni/aw_results_angio -skullstrip /opt/home/data/mask_brain.nii.gz >> "${stdout_log}" 2>> "${stderr_log}"
+@animal_warper -input "$input_file" -base /opt/home/data/template_T1w.nii.gz -outdir /opt/home/output/Florian_preproc/afni/aw_results_angio -skullstrip /opt/home/data/mask_brain.nii.gz -ok_to_exist >> "${stdout_log}" 2>> "${stderr_log}"

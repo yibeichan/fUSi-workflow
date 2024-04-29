@@ -4,9 +4,9 @@
 #SBATCH --error=/om/user/yibei/fUSi-workflow/logs/%x_%j.err 
 #SBATCH --partition=normal 
 #SBATCH --exclude=node[030-060]
-#SBATCH --time=05:00:00
+#SBATCH --time=06:00:00
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=24G
+#SBATCH --mem=16G
 #SBATCH --mail-type=FAIL,END
 #SBATCH --mail-user=yibei@mit.edu
 
