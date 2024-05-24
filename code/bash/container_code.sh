@@ -13,4 +13,10 @@ neurodocker generate singularity \
     --base-image neurodebian:bullseye \
     --miniconda version=latest conda_install="nipype notebook" \
     --install afni ants git vim \
-    --user nonroot
+    --user nonroot > neuro_container.def
+
+singularity build --sandbox neuro_container/ neuro_container.def
+
+
+# run 
+apptainer shell -B /om/user/yibei/fUSi-workflow:/opt/home -e /om/user/yibei/images/afni.sif
