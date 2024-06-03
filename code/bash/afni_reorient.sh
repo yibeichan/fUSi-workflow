@@ -1,6 +1,7 @@
 #!/bin/bash
-fullpath_file="/opt/home/data/Florian_raw_data/15_NoSAT_TOF_3D_multi-slab_0.13mm_iso.nii"
-output_dir="/opt/home/output/Florian_preproc/afni/reorient_angio"
+# fullpath_file="/opt/home/data/Florian_raw_data/15_NoSAT_TOF_3D_multi-slab_0.13mm_iso.nii"
+fullpath_file="/opt/home/data/Charmander_withouskull_withMB_3Dscan_4_angio3D.nii"
+output_dir="/opt/home/output/Florian_preproc/afni/reorient_fusi"
 
 mkdir -p "${output_dir}"
 
@@ -12,7 +13,7 @@ stderr_log="${output_dir}/error.log"
 cd "${output_dir}"
 
 # Deoblique
-temp_prefix=angio_raw_deo
+temp_prefix=fusi_raw_deo
 3dWarp -oblique2card -prefix "${temp_prefix}.nii.gz" "${fullpath_file}" >> "${stdout_log}" 2>> "${stderr_log}"
 
 # Flip Sphinx position
