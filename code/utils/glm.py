@@ -54,3 +54,4 @@ def plot_contrasts(contrast_results, brain_shape):
 
     plt.tight_layout()
     plt.show()
+    
