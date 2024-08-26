@@ -38,10 +38,7 @@ def map_events_to_frame_times(event_df, frame_times):
     return event_df.dropna(subset=['nearest_index_onset']), event_binary_df
 
 
-def get_trial_data(event_df, pixel_data, tr=1/2.5):
-    offset_start = -12 * tr
-    offset_end = 48 * tr
-
+def get_trial_data(event_df, offset_start, offset_end, pixel_data, tr=1/2.5):
     onset_indices = event_df['nearest_index_onset'].values
     indices = [np.arange(i + offset_start, i + offset_end, step=tr) for i in onset_indices]
 
@@ -69,10 +66,9 @@ def normalize_data(data):
 
 def proc_pixel(pixel_data, event_df, tr=1/2.5):
     trial_data = get_trial_data(event_df, pixel_data, tr)
-    trial_types = ['5', '6', '7']
     normalized_data = []
 
-    for trial_type in trial_types:
+    for trial_type in event_df['trial_type'].unique():
         data = trial_data[event_df['trial_type'] == trial_type]
         normalized_data.append(normalize_data(data))
     

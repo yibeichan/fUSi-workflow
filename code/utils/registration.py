@@ -15,47 +15,38 @@ def get_transform_matrix(file1, file2):
 
     return affine2 @ np.linalg.inv(affine1)
 
-def correct4registration(infile1, infile2, outfile):
+def correct4registration(infile, outfile):
     """
-    infile1: original image with time series
-    infile2: one time point image exported from 3D slicer (no any operations)
-    outfile: output image corrected for registration
+    Correct affine matrix for registration
+    infile: saved image from 3D slicer
+    outfile: output corrected image 2D for landmark registration
     """
-    mtx = get_transform_matrix(infile1, infile2)
-    img = nib.load(infile1)
+    img = nib.load(infile)
     data = img.get_fdata()
     affine = img.affine
 
-    # Apply the first affine transformation
-    transformed_affine = mtx @ affine
-
-    # Correct for registration
-    corrected_affine = transformed_affine.copy()
+    corrected_affine = affine.copy()
     corrected_affine[[0, 1]] = corrected_affine[[1, 0]]
 
     print("Corrected Affine:\n", corrected_affine)
     print(aff2axcodes(corrected_affine))
+    
+    # reflect z to be positive
+    transform_matrix = np.array([[1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                [0, 0, -1, 0],
+                                [0, 0, 0, 1]])
 
-    # Reflect z to be positive
-    reflect_transform = np.array([[1, 0, 0, 0],
-                                  [0, 1, 0, 0],
-                                  [0, 0, -1, 0],
-                                  [0, 0, 0, 1]])
+    transformed_affine = corrected_affine @ transform_matrix
 
-    transformed_affine = corrected_affine @ reflect_transform
+    print(transformed_affine)
 
-    print("Transformed Affine after reflect:\n", transformed_affine)
-    # Flip A/P (axis 0) and S/I (axis 2) to correct the orientation
-    flipped_data = np.flip(np.flip(data, axis=0), axis=2)
+    flipped_data = np.flip(data, axis=2)
 
-    # Create the new image with the transformed affine matrix
     new_img = nib.Nifti1Image(flipped_data, transformed_affine, img.header)
-    print(new_img.affine, aff2axcodes(new_img.affine))
 
-    # Save the result
     nib.save(new_img, outfile)
 
-    return new_img
 
 def slice2chunk_align(ref_img_file, moving_img_file, transform_file, output_file):
     """
