@@ -56,7 +56,7 @@ def process_and_save_time_point(t, sitk_moving_4d_image, sitk_fixed_image, affin
     transformed_4d_image[:, :, :, t] = transformed_array  # Directly save to memory-mapped file
 
 
-def main(aligned_2d_file, corrected_ts_file, transform_mtx_file, task_dir, output_filename='transformed_4d_image.dat', npy_filename='transformed_timeseries.npy'):
+def main(aligned_2d_file, corrected_ts_file, transform_mtx_file, task_dir, output_filename='transformed_4d_image.dat', npy_filename='grouper_livemarmoset_0618_ts_transformed.npy'):
     """
     Main function to process and transform the 4D image and save the results.
     """

@@ -6,6 +6,10 @@ import scipy.io as sio
 from scipy.signal import butter, filtfilt, detrend
 from scipy.ndimage import gaussian_filter1d
 
+import numpy as np
+from scipy.signal import detrend, butter, filtfilt
+from scipy.ndimage import gaussian_filter1d
+
 class FUSCleaner:
     def __init__(self, detrend=False, standardize=True, low_pass=None, high_pass=None, fs=2.5, sigma=1):
         """
@@ -39,7 +43,7 @@ class FUSCleaner:
         Clean the fUS data according to the initialized parameters.
         
         Parameters:
-        - data: 3D numpy array of shape (x, y, n_TR) representing the time series data.
+        - data: 4D numpy array of shape (x, y, z, n_TR) representing the time series data.
         
         Returns:
         - Cleaned data.
@@ -66,7 +70,7 @@ class FUSCleaner:
     def detrend_data(self, data):
         """ Detrend the data along the time axis (n_TR). """
         try:
-            return detrend(data, axis=-1)
+            return detrend(data, axis=-1)  # Apply detrending along the time axis
         except Exception as e:
             raise ValueError(f"Detrending failed: {e}")
 
@@ -90,14 +94,14 @@ class FUSCleaner:
 
         try:
             b, a = butter(5, cutoff, btype=btype)
-            return filtfilt(b, a, data, axis=-1)
+            return filtfilt(b, a, data, axis=-1)  # Apply filtering along the time axis
         except Exception as e:
             raise ValueError(f"Filtering failed: {e}")
 
     def temporal_smoothing(self, data):
         """ Apply temporal smoothing along the time axis using a Gaussian filter. """
         try:
-            return gaussian_filter1d(data, sigma=self.sigma, axis=-1)
+            return gaussian_filter1d(data, sigma=self.sigma, axis=-1)  # Smoothing along the time axis
         except Exception as e:
             raise ValueError(f"Temporal smoothing failed: {e}")
 
@@ -106,7 +110,7 @@ class FUSCleaner:
         Z-score normalize the data, with special handling if it's already detrended.
         
         Parameters:
-        - data: 3D numpy array
+        - data: 4D numpy array of shape (x, y, z, n_TR)
         - detrended: bool, whether the data has already been detrended (skip mean subtraction)
         
         Returns:
@@ -131,14 +135,15 @@ class FUSCleaner:
         Validate the input data.
         
         Parameters:
-        - data: 3D numpy array to be cleaned.
+        - data: 4D numpy array to be cleaned.
         """
         if not isinstance(data, np.ndarray):
             raise ValueError("Input data must be a numpy array.")
-        if data.ndim != 3:
-            raise ValueError("Input data must be a 3D array of shape (x, y, n_TR).")
+        if data.ndim != 4:
+            raise ValueError("Input data must be a 4D array of shape (x, y, z, n_TR).")
         if data.shape[-1] <= 1:
             raise ValueError("Time dimension (n_TR) must be greater than 1.")
+
 
 def load_data(data_dir, brain_filename, event_filename):
     brain_file = os.path.join(data_dir, brain_filename)
