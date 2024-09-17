@@ -10,7 +10,6 @@ def find_nearest_index(value, index, tolerance=0.2):
         return index[nearest_idx]
     return None
 
-
 # Function to map events to frame times
 def map_events_to_frame_times(event_df, frame_times):
     event_binary_df = pd.DataFrame(index=frame_times.round(1))
