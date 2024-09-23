@@ -52,11 +52,11 @@ def process_and_save_time_point(t, sitk_moving_4d_image, sitk_fixed_image, affin
     )
 
     # Convert to array and write directly to memmap
-    transformed_array = sitk.GetArrayFromImage(resampled_image_3d).transpose(2, 1, 0)[79:81, :, :]
+    transformed_array = sitk.GetArrayFromImage(resampled_image_3d).transpose(2, 1, 0)[87:89, :, :]
     transformed_4d_image[:, :, :, t] = transformed_array  # Directly save to memory-mapped file
 
 
-def main(aligned_2d_file, corrected_ts_file, transform_mtx_file, task_dir, output_filename='transformed_4d_image.dat', npy_filename='grouper_livemarmoset_0618_ts_transformed.npy'):
+def main(aligned_2d_file, corrected_ts_file, transform_mtx_file, task_dir, output_filename='transformed_4d_image.dat', npy_filename='grouper_audiocue_060324_8-5_ts_transformed.npy'):
     """
     Main function to process and transform the 4D image and save the results.
     """
@@ -105,10 +105,10 @@ if __name__ == "__main__":
     load_dotenv()
     base_dir = os.getenv('BASE_DIR')
     task_dir = os.path.join(base_dir, 'task_data')
-    register_dir = os.path.join(base_dir, 'slice2chunk_grouper', '061824_1-5')
+    register_dir = os.path.join(base_dir, 'slice2chunk_grouper', '060324_8-5')
 
-    aligned_2d_file = os.path.join(register_dir, 'Grouper_livemarmoset_0618_2D_corrected-transformed.nii.gz')
-    corrected_ts_file = os.path.join(register_dir, 'Grouper_livemarmoset_0618_2D_timepoints_corrected.nii.gz')
+    aligned_2d_file = os.path.join(register_dir, 'Grouper_audiocue_060324_corrected-transformed.nii.gz')
+    corrected_ts_file = os.path.join(register_dir, 'Grouper_audiocue_060324_2D_timepoints_corrected.nii.gz')
     transform_mtx_file = os.path.join(register_dir, 'Transform.h5')
 
     main(aligned_2d_file, corrected_ts_file, transform_mtx_file, task_dir)
