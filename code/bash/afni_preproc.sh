@@ -62,9 +62,6 @@ echo "skullstrip_file: $skullstrip_file"
 echo "output_dir: $output_dir"
 echo "reoriented_output_dir: $reoriented_output_dir"
 
-# Shift away the parsed options
-shift $((OPTIND - 1))
-
 # Capture any remaining arguments as atlas files
 for arg in "$@"; do
     atlas_files+=("$arg")
@@ -105,28 +102,31 @@ mkdir -p "${reoriented_output_dir}"
 stdout_log="${output_dir}/output.log"
 stderr_log="${output_dir}/error.log"
 
-# Check orientations
+# Check orientations and obliquity
 input_orientation=$(3dinfo -orient "$original_input_file")
 base_orientation=$(3dinfo -orient "$base_file")
+is_oblique=$(3dinfo -is_oblique "$original_input_file")
 input_obliquity=$(3dinfo -obliquity "$original_input_file")
 
 echo "Input file orientation: $input_orientation" >> "${stdout_log}"
 echo "Base file orientation: $base_orientation" >> "${stdout_log}"
 echo "Input file obliquity: $input_obliquity" >> "${stdout_log}"
 
-# Reorient if necessary
-if [ "$input_obliquity" != "0.000" ]; then
-    echo "Input file is oblique. Reorienting to cardinal orientation." >> "${stdout_log}"
+# Handle obliquity if present
+if [ "$is_oblique" -eq 1 ]; then
+    echo "Input file is oblique. Using adjunct_deob_around_origin to handle obliquity." >> "${stdout_log}"
     
     base_filename=$(strip_extension "$original_input_file")
-    temp_prefix="${base_filename}_deo"
+    temp_prefix="${base_filename}_deob"
     echo "Temp prefix: $temp_prefix" >> "${stdout_log}"
-    3dWarp -oblique2card -prefix "${reoriented_output_dir}/${temp_prefix}.nii.gz" "${original_input_file}" >> "${stdout_log}" 2>> "${stderr_log}"
     
-    # Use the reoriented file
+    # Use adjunct_deob_around_origin instead of 3dWarp
+    adjunct_deob_around_origin "${original_input_file}" "${reoriented_output_dir}/${temp_prefix}.nii.gz" >> "${stdout_log}" 2>> "${stderr_log}"
+    
+    # Use the deobliqued file
     input_file="${reoriented_output_dir}/${temp_prefix}.nii.gz"
 else
-    echo "Input file is already in cardinal orientation. No reorientation needed." >> "${stdout_log}"
+    echo "Input file is not oblique. No deobliquing needed." >> "${stdout_log}"
     input_file="$original_input_file"
     base_filename=$(strip_extension "$input_file")
     temp_prefix="${base_filename}"

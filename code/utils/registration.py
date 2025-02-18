@@ -3,7 +3,7 @@ import nibabel as nib
 from nibabel.orientations import aff2axcodes
 import SimpleITK as sitk
 
-def nifit_info(file):
+def nifti_info(file):
     img = nib.load(file)
     data = img.get_fdata()
 

@@ -149,8 +149,7 @@ def load_data(data_dir, brain_filename, event_filename):
     brain_file = os.path.join(data_dir, brain_filename)
     event_file = os.path.join(data_dir, event_filename)
 
-    brain_img = nib.load(brain_file)
-    brain_data = brain_img.get_fdata()
+    brain_data = nib.load(brain_file).get_fdata()
     print(f"Brain data shape: {brain_data.shape}")
 
     event_mat = sio.loadmat(event_file)['mldata'][0][0][0]
